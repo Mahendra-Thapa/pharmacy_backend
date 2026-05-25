@@ -1,0 +1,303 @@
+﻿Database 'pharmacy' verified.
+Running Database Seeds...
+python : Traceback (most 
+recent call last):
+At line:1 char:1
++ python seed.py *>&1 | 
+Out-File -FilePath 
+"seed_error.txt" 
+-Encoding u ...
++ ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (T  
+  raceback (most recent   
+  call last)::String)     
+[], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\utils
+.py", line 105, in 
+_execute
+    return 
+self.cursor.execute(sql, 
+params)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\mysql
+\base.py", line 78, in 
+execute
+    return self.cursor.exe
+cute(query, args)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\cursors.py", 
+line 153, in execute
+    result = 
+self._query(query)
+             
+^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\cursors.py", 
+line 322, in _query
+    conn.query(q)
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 558, in query
+    self._affected_rows = 
+self._read_query_result(un
+buffered=unbuffered)
+                          
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 822, in 
+_read_query_result
+    result.read()
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 1200, in read
+    first_packet = self.co
+nnection._read_packet()
+                   ^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 772, in _read_packet
+    
+packet.raise_for_error()
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\protocol.py", 
+line 221, in 
+raise_for_error
+    err.raise_mysql_except
+ion(self._data)
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\err.py", line 
+143, in 
+raise_mysql_exception
+    raise 
+errorclass(errno, errval)
+pymysql.err.ProgrammingErr
+or: (1146, "Table 
+'pharmacy.rx_user' 
+doesn't exist")
+
+The above exception was 
+the direct cause of the 
+following exception:
+
+Traceback (most recent 
+call last):
+  File "C:\7th-S-final-yea
+r\Pharmacy-Management-Syst
+em\backend\seed.py", line 
+110, in <module>
+    run_seed()
+  File "C:\7th-S-final-yea
+r\Pharmacy-Management-Syst
+em\backend\seed.py", line 
+44, in run_seed
+    if not User.objects.fi
+lter(username='admin').exi
+sts():
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\models\query.p
+y", line 1337, in exists
+    return self.query.has_
+results(using=self.db)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\models\sql\que
+ry.py", line 686, in 
+has_results
+    return 
+compiler.has_results()
+           
+^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\models\sql\com
+piler.py", line 1592, in 
+has_results
+    return bool(self.execu
+te_sql(SINGLE))
+                
+^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\models\sql\com
+piler.py", line 1624, in 
+execute_sql
+    cursor.execute(sql, 
+params)
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\utils
+.py", line 122, in execute
+    return 
+super().execute(sql, 
+params)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\utils
+.py", line 79, in execute
+    return self._execute_w
+ith_wrappers(
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\utils
+.py", line 92, in 
+_execute_with_wrappers
+    return executor(sql, 
+params, many, context)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\utils
+.py", line 100, in 
+_execute
+    with self.db.wrap_data
+base_errors:
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\utils.py", 
+line 94, in __exit__
+    raise dj_exc_value.wit
+h_traceback(traceback) 
+from exc_value
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\utils
+.py", line 105, in 
+_execute
+    return 
+self.cursor.execute(sql, 
+params)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\django\db\backends\mysql
+\base.py", line 78, in 
+execute
+    return self.cursor.exe
+cute(query, args)
+           ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\cursors.py", 
+line 153, in execute
+    result = 
+self._query(query)
+             
+^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\cursors.py", 
+line 322, in _query
+    conn.query(q)
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 558, in query
+    self._affected_rows = 
+self._read_query_result(un
+buffered=unbuffered)
+                          
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 822, in 
+_read_query_result
+    result.read()
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 1200, in read
+    first_packet = self.co
+nnection._read_packet()
+                   ^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\connections.py",
+ line 772, in _read_packet
+    
+packet.raise_for_error()
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\protocol.py", 
+line 221, in 
+raise_for_error
+    err.raise_mysql_except
+ion(self._data)
+  File "C:\Users\Acer\AppD
+ata\Local\Programs\Python\
+Python312\Lib\site-package
+s\pymysql\err.py", line 
+143, in 
+raise_mysql_exception
+    raise 
+errorclass(errno, errval)
+django.db.utils.Programmin
+gError: (1146, "Table 
+'pharmacy.rx_user' 
+doesn't exist")

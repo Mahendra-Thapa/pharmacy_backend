@@ -1,0 +1,4 @@
+Total Users: 3
+User: admin, Role: USER, Active: True
+User: pos, Role: POS, Active: True
+User: customer, Role: USER, Active: True
