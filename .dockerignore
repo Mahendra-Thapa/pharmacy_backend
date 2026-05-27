@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+.env.local
+
+# Database files
+db.sqlite3
+*.sqlite3
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Git
+.git/
+.gitignore
+
+# Logs and outputs
+*.log
+*_error.txt
+*_log.txt
+*_output.txt

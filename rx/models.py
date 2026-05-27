@@ -12,6 +12,27 @@ class User(AbstractUser):
     role = models.CharField(max_length=50, choices=ROLE_CHOICES, default='USER')
     phone = models.CharField(max_length=20, blank=True, null=True)
 
+class Address(models.Model):
+    ADDRESS_TYPE_CHOICES = (
+        ('HOME', 'Home'),
+        ('OFFICE', 'Office'),
+        ('OTHER', 'Other'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    label = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=10, choices=ADDRESS_TYPE_CHOICES, default='HOME')
+    address_line = models.TextField()
+    city = models.CharField(max_length=100, blank=True, default='')
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_default', '-created_at']
+
+    def __str__(self):
+        return f"{self.label} - {self.user.username}"
+
 class DeliveryOption(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)

@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     UserViewSet, CustomerViewSet, CategoryViewSet,
     MedicineViewSet, SaleViewSet, PaymentTransactionViewSet, LoginView, DeliveryOptionViewSet, PharmacySettingsViewSet,
-    FileUploadView
+    FileUploadView, AddressViewSet
 )
 
 router = DefaultRouter()
@@ -15,6 +15,7 @@ router.register(r'sales', SaleViewSet)
 router.register(r'payment-transactions', PaymentTransactionViewSet)
 router.register(r'delivery-options', DeliveryOptionViewSet)
 router.register(r'pharmacy-settings', PharmacySettingsViewSet)
+router.register(r'addresses', AddressViewSet, basename='address')
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Customer, Category, Medicine, Sale, SaleItem, PaymentTransaction, DeliveryOption, PharmacySettings, OrderStatusHistory
+from .models import Customer, Category, Medicine, Sale, SaleItem, PaymentTransaction, DeliveryOption, PharmacySettings, OrderStatusHistory, Address
 import uuid
 
 User = get_user_model()
@@ -35,6 +35,12 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ('id', 'label', 'address_type', 'address_line', 'city', 'is_default', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at')
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

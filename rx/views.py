@@ -5,11 +5,11 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils import timezone
 import uuid
-from .models import Customer, Category, Medicine, Sale, SaleItem, PaymentTransaction, DeliveryOption, PharmacySettings, OrderStatusHistory
+from .models import Customer, Category, Medicine, Sale, SaleItem, PaymentTransaction, DeliveryOption, PharmacySettings, OrderStatusHistory, Address
 from .serializers import (
     UserSerializer, UserRegistrationSerializer, CustomerSerializer, CategorySerializer,
     MedicineSerializer, SaleSerializer, PaymentTransactionSerializer, DeliveryOptionSerializer, 
-    PharmacySettingsSerializer, OrderStatusHistorySerializer
+    PharmacySettingsSerializer, OrderStatusHistorySerializer, AddressSerializer
 )
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -466,6 +466,52 @@ class PaymentTransactionViewSet(viewsets.ModelViewSet):
             payment.save()
             return Response({'status': 'Payment marked as completed'})
         return Response({'error': 'Payment already processed'}, status=status.HTTP_400_BAD_REQUEST)
+
+class AddressViewSet(viewsets.ModelViewSet):
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            from .models import Address as AddressModel
+            return AddressModel.objects.none()
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        is_default = serializer.validated_data.get('is_default', False)
+        # If this is the user's first address, make it default
+        if not Address.objects.filter(user=user).exists():
+            is_default = True
+        # If setting as default, un-default the rest
+        if is_default:
+            Address.objects.filter(user=user, is_default=True).update(is_default=False)
+        serializer.save(user=user, is_default=is_default)
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        is_default = serializer.validated_data.get('is_default', False)
+        if is_default:
+            Address.objects.filter(user=user, is_default=True).update(is_default=False)
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        user = instance.user
+        was_default = instance.is_default
+        instance.delete()
+        # If deleted address was default, promote the most recent one
+        if was_default:
+            next_addr = Address.objects.filter(user=user).first()
+            if next_addr:
+                next_addr.is_default = True
+                next_addr.save()
+
+    @action(detail=True, methods=['patch'])
+    def set_default(self, request, pk=None):
+        address = self.get_object()
+        Address.objects.filter(user=request.user, is_default=True).update(is_default=False)
+        address.is_default = True
+        address.save()
+        return Response(AddressSerializer(address).data)
 
 class PharmacySettingsViewSet(viewsets.ModelViewSet):
     queryset = PharmacySettings.objects.all()
