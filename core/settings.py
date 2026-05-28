@@ -32,7 +32,8 @@ SECRET_KEY = 'django-insecure-tt@0hc#mzi)u=g^e4r@zaojvx!x1f$&u*-#ym-wz#_j$%6_8v!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+import os
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 
 # Application definition
@@ -97,7 +98,13 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'rx.User'
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    os.getenv('FRONTEND_URL', 'http://localhost:3000'),
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+]
+CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
