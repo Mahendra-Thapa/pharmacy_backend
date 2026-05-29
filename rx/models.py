@@ -36,8 +36,9 @@ class Address(models.Model):
 class DeliveryOption(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    base_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    per_km_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    base_charge = models.IntegerField(default=0)
+    per_km_charge = models.IntegerField(default=0)
+    estimated_days = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -69,7 +70,7 @@ class Medicine(models.Model):
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='medicines')
     manufacturer = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.IntegerField()
     stock = models.IntegerField(default=0)
     expiry_date = models.DateField()
     description = models.TextField(blank=True, null=True)
@@ -101,10 +102,10 @@ class Sale(models.Model):
     order_number = models.CharField(max_length=20, unique=True, default=generate_order_number, editable=False)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, related_name='sales')
     handled_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='sales_processed')
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_amount = models.IntegerField(default=0)
     delivery_option = models.ForeignKey(DeliveryOption, on_delete=models.SET_NULL, null=True, blank=True)
-    delivery_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    distance_km = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    delivery_charge = models.IntegerField(default=0)
+    distance_km = models.IntegerField(default=0)
     date_added = models.DateTimeField(default=timezone.now)
     # Order Status tracking
     status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='PENDING')
@@ -133,8 +134,8 @@ class SaleItem(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items')
     medicine = models.ForeignKey(Medicine, on_delete=models.PROTECT)
     quantity = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2) # Price at the time of sale
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.IntegerField() # Price at the time of sale
+    total = models.IntegerField()
 
     def __str__(self):
         return f"{self.quantity} x {self.medicine.name} for Sale {self.sale.id}"
@@ -146,7 +147,7 @@ class PaymentTransaction(models.Model):
         ('CARD', 'Card'),
     )
     sale = models.OneToOneField(Sale, on_delete=models.CASCADE, related_name='payment')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.IntegerField()
     method = models.CharField(max_length=50, choices=PAYMENT_METHODS, default='CASH')
     transaction_id = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, default='COMPLETED') # e.g., PENDING, COMPLETED
