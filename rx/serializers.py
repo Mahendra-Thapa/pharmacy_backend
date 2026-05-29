@@ -71,7 +71,7 @@ class PaymentTransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PaymentTransaction
-        fields = ('id', 'amount', 'method', 'status', 'transaction_id', 'timestamp', 'qr_payment_url')
+        fields = ('id', 'amount', 'method', 'status', 'transaction_id', 'timestamp', 'qr_payment_url', 'payment_screenshot')
 
     def get_qr_payment_url(self, obj):
         if obj.method == 'QR':
@@ -103,6 +103,9 @@ class SaleSerializer(serializers.ModelSerializer):
     handled_by_name = serializers.ReadOnlyField(source='handled_by.username')
     status_changed_by_name = serializers.SerializerMethodField()
     status_changed_by_role = serializers.ReadOnlyField(source='status_changed_by.role')
+    customer_email = serializers.ReadOnlyField(source='customer.email')
+    customer_phone = serializers.ReadOnlyField(source='customer.phone')
+    customer_address = serializers.ReadOnlyField(source='customer.address')
     status_history = OrderStatusHistorySerializer(many=True, read_only=True)
 
     def get_customer_name(self, obj):
@@ -116,7 +119,7 @@ class SaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sale
         fields = (
-            'id', 'order_number', 'customer', 'customer_name', 
+            'id', 'order_number', 'customer', 'customer_name', 'customer_email', 'customer_phone', 'customer_address',
             'handled_by', 'handled_by_name', 'total_amount', 'date_added', 
             'items', 'payment', 'delivery_option', 'delivery_charge', 'distance_km',
             'status', 'status_changed_by', 'status_changed_by_name', 

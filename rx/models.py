@@ -143,6 +143,7 @@ class SaleItem(models.Model):
 class PaymentTransaction(models.Model):
     PAYMENT_METHODS = (
         ('CASH', 'Cash'),
+        ('COD', 'Cash on Delivery'),
         ('QR', 'QR Code / Digital Wallet'),
         ('CARD', 'Card'),
     )
@@ -151,6 +152,7 @@ class PaymentTransaction(models.Model):
     method = models.CharField(max_length=50, choices=PAYMENT_METHODS, default='CASH')
     transaction_id = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, default='COMPLETED') # e.g., PENDING, COMPLETED
+    payment_screenshot = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

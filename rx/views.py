@@ -230,6 +230,7 @@ class SaleViewSet(viewsets.ModelViewSet):
         customer_id = data.get('customer') or data.get('customer_id')
         items = data.get('items', [])
         payment_method = data.get('payment_method', 'CASH')
+        payment_screenshot = data.get('payment_screenshot')
         delivery_option_id = data.get('delivery_option')
         distance_km = float(data.get('distance_km', 0))
         
@@ -317,8 +318,9 @@ class SaleViewSet(viewsets.ModelViewSet):
             sale=sale,
             amount=final_total,
             method=payment_method,
-            status='PENDING' if payment_method == 'QR' else 'COMPLETED',
-            transaction_id=uuid.uuid4().hex[:10] if payment_method == 'QR' else None
+            status='PENDING' if payment_method in ['QR', 'COD'] else 'COMPLETED',
+            transaction_id=data.get('transaction_id') or (uuid.uuid4().hex[:10] if payment_method == 'QR' else None),
+            payment_screenshot=payment_screenshot
         )
 
         serializer = self.get_serializer(sale)
@@ -326,28 +328,50 @@ class SaleViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['patch'])
     def update_status(self, request, pk=None):
-        """Allow ADMIN/POS to update order status"""
+        """Allow ADMIN/POS to update order status and optionally payment status"""
         user = request.user
         if not user.is_authenticated:
             return Response({'error': 'Not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
         if user.role not in ['ADMIN', 'POS']:
             return Response({'error': 'Only ADMIN or POS can update order status'}, status=status.HTTP_403_FORBIDDEN)
-        
+
         sale = self.get_object()
         new_status = request.data.get('status')
+        new_payment_status = request.data.get('payment_status')
         note = request.data.get('note', '')
-        
+
+        # Validate order status
         valid_statuses = ['PENDING', 'CONFIRMED', 'PROCESSING', 'READY', 'DISPATCHED', 'DELIVERED', 'CANCELLED']
         if not new_status or new_status not in valid_statuses:
             return Response({'error': f'Invalid status. Valid: {valid_statuses}'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+        # Update order status
         old_status = sale.status
         sale.status = new_status
         sale.status_changed_by = user
         sale.status_changed_at = timezone.now()
         sale.save()
-        
-        # Record history
+
+        # Optional: Update payment status if provided
+        if new_payment_status:
+            valid_payment_statuses = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED']
+            if new_payment_status not in valid_payment_statuses:
+                return Response({'error': f'Invalid payment status. Valid: {valid_payment_statuses}'}, status=status.HTTP_400_BAD_REQUEST)
+            # Ensure there is a payment transaction linked
+            payment = getattr(sale, 'payment', None)
+            if payment:
+                payment.status = new_payment_status
+                payment.save()
+            else:
+                # Create a new payment transaction if missing (fallback)
+                payment = PaymentTransaction.objects.create(
+                    sale=sale,
+                    amount=sale.total_amount,
+                    method='UNKNOWN',
+                    status=new_payment_status,
+                )
+
+        # Record order status history
         OrderStatusHistory.objects.create(
             sale=sale,
             old_status=old_status,
@@ -355,7 +379,8 @@ class SaleViewSet(viewsets.ModelViewSet):
             changed_by=user,
             note=note
         )
-        
+
+        # Return updated sale (serializer includes nested payment status)
         serializer = self.get_serializer(sale)
         return Response(serializer.data)
 
